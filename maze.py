@@ -38,7 +38,7 @@ def generate(width, height):
 def get_neighbors(pos, maze):
     neighbors = []
     # Перебираем четыре направления: вверх, вниз, влево и вправо
-    for direction in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+    for direction in [(0, 1), (1, 0)]:
         # Считаем координаты соседней точки
         neighbor = (pos[0] + direction[0], pos[1] + direction[1])
         # Проверяем, что соседняя точка не является стеной лабиринта
@@ -58,8 +58,10 @@ class IndexedQueue(OrderedDict):
         return OrderedDict.popitem(self, last=False)[0]
 
 
-def find_path(points, start, end=None):
-    gr = create_dict(points)
+def find_path(maze):
+    start = (1, 1)
+    end = (len(maze) - 2, len(maze[0]) - 2)
+    gr = create_dict(maze, len(maze[0]), len(maze))
     dist = defaultdict(lambda: inf)
     dist[start] = 0
     path = {start: (start, ())}
@@ -99,14 +101,11 @@ def find_path(points, start, end=None):
         return ()
 
 
-def create_dict(points):
+def create_dict(maze, width, height):
     points_dict = defaultdict(list)
-    for first, second in points:
-        points_dict[first].append(second)
+    for i in range(1, height - 1):
+        for j in range(1, width - 1):
+            neighbors = get_neighbors((i, j), maze)
+            for neighbor in neighbors:
+                points_dict[(i, j)].append(neighbor)
     return points_dict
-
-
-if __name__ == '__main__':
-    points = [('a', 'b'), ('b', 'c'), ('c', 'a'), ('c', 'd'), ('a', '5')]
-    path = find_path(points, 'a', 'c')
-    print(path)

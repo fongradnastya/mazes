@@ -5,7 +5,7 @@ import argparse
 
 from typing import Any
 
-from maze import generate, best_first_search
+from maze import generate, find_path
 from graphic import visualization_init
 from file_proc import read_from_text, \
     read_from_image
@@ -96,7 +96,8 @@ def parse_args() -> None:
 
         if args.solution:
             try:
-                solution = best_first_search(maze)
+                solution = find_path(maze)
+                print(solution)
                 visualization_init(maze, solution, args.save_maze_image,
                                    args.save_maze_text)
             except (IndexError, KeyError):
