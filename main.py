@@ -15,12 +15,12 @@ def check_args(args: Any) -> bool:
     """Проверка переданных аргументов"""
 
     if args.width_height:
-        if args.width_height[0] not in range(3, 401):
-            print("Ширина лабиринта должна быть от 3 до 400.")
+        if args.width_height[0] not in range(3, 201):
+            print("Ширина лабиринта должна быть от 3 до 200.")
             return False
 
-        if args.width_height[1] not in range(3, 401):
-            print("Высота лабиринта должна быть от 3 до 400.")
+        if args.width_height[1] not in range(3, 201):
+            print("Высота лабиринта должна быть от 3 до 200.")
             return False
 
     if args.load_maze_text and (not os.path.exists(
@@ -37,10 +37,12 @@ def check_args(args: Any) -> bool:
     if args.save_maze_image and (args.save_maze_image[-3:] not in ["jpg",
                                                                    "png"] or
                                  "/" in args.save_maze_image):
+        print("Неверный формат файла.")
         return False
 
     if args.save_maze_text and (args.save_maze_text[-3:] not in ["txt"] or
                                 "/" in args.save_maze_text):
+        print("Неверный файл.")
         return False
 
     return True
@@ -49,15 +51,15 @@ def check_args(args: Any) -> bool:
 def parse_args() -> None:
     """Обработка параметров командной строки"""
     # Осуществляем разбор аргументов командной строки
-    parser = argparse.ArgumentParser(description="Сжатие изображений на основе"
-                                                 " квадродеревьев")
+    parser = argparse.ArgumentParser(description="Генерация и решение "
+                                                 "лабиринтов")
 
     # Метод add_mutually_exclusive_group() создает взаимоисключающую группу
     # параметров командной строки
     group = parser.add_mutually_exclusive_group(required=True)
 
     group.add_argument('-wh', '--width_height', nargs=2, dest="width_height",
-                       type=int, help='Ширина и высота лабиринта (от 3 до 400)')
+                       type=int, help='Ширина и высота лабиринта (от 3 до 200)')
 
     group.add_argument('-lmi', '--load-maze-image', dest="load_maze_image",
                        type=str,
@@ -97,7 +99,6 @@ def parse_args() -> None:
         if args.solution:
             try:
                 solution = find_path(maze)
-                print(solution)
                 visualization_init(maze, solution, args.save_maze_image,
                                    args.save_maze_text)
             except (IndexError, KeyError):

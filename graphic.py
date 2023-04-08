@@ -10,7 +10,6 @@ def print_maze(maze):
     # Проверяем указатель на None
     if maze is None:
         return
-
     # Построчно считываем и выводим в консоль
     for i in range(len(maze)):
         for j in range(len(maze[0])):
@@ -22,7 +21,6 @@ def visualize_maze(screen, maze, scale):
     # Проверяем указатель на None
     if maze is None:
         return
-
     # Рисуем лабиринт
     for i in range(len(maze)):
         for j in range(len(maze[0])):
@@ -32,7 +30,6 @@ def visualize_maze(screen, maze, scale):
             else:
                 pg.draw.rect(screen, BACKGROUND, (j * scale, i * scale, scale,
                                                   scale))
-
     # Обновляем экран
     pg.display.flip()
 
@@ -44,15 +41,14 @@ def draw_solution(screen, solution, scale):
     prev = None
     # Рисуем решение лабиринта
     for point in solution:
-
         pg.draw.rect(screen, PATH,
                      (point[1] * scale, point[0] * scale, scale, scale))
         if prev:
             pg.draw.rect(screen, PATH,
                          (prev[1] * scale, prev[0] * scale, scale, scale))
         imp = pg.image.load("bird.png").convert_alpha()
-        imp = pg.transform.scale(imp, (scale, scale))
-        screen.blit(imp, (point[1] * scale, point[0] * scale))
+        imp = pg.transform.scale(imp, (scale, scale / 1.3))
+        screen.blit(imp, (point[1] * scale, point[0] * scale + (scale / 8)))
         # Обновляем экран
         pg.display.flip()
         pg.time.wait(100)
@@ -60,7 +56,9 @@ def draw_solution(screen, solution, scale):
 
 
 def print_solution(solution):
-    solution_str = " -> ".join(solution)
+    print("Maze solution: ", end="")
+    solution_str = map(str, solution)
+    solution_str = " -> ".join(solution_str)
     print(solution_str)
 
 
@@ -68,15 +66,17 @@ def visualization_init(maze: [[]], solution: [()] = None,
                        img_path: str = None, text_path: str = None):
     # Инициализируем Pygame
     pg.init()
+    # pygame_icon = pg.image.load('bird.png')
+    # pg.display.set_icon(pygame_icon)
+    pg.display.set_caption('Maze solution')
     width = len(maze[0])
     height = len(maze)
     scale = 900 // height if height >= width else 900 // width
-
     # Создаем окно
     screen = pg.display.set_mode((width * scale, height * scale))
     visualize_maze(screen, maze, scale)
     if solution:
-        # print_solution(solution)
+        print_solution(solution)
         draw_solution(screen, solution, scale)
 
     if img_path:
@@ -90,13 +90,11 @@ def visualization_init(maze: [[]], solution: [()] = None,
                 file.write(''.join(row) + "\r\n")
         print(f"Лабиринт в текстовом формате сохранён в файл {text_path}"
               f" в папке maze_text")
-
     # Ожидаем закрытия окна
     running = True
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
-
     # Выходим из Pygame
     pg.quit()
