@@ -1,25 +1,24 @@
 import random
-
-from queue import PriorityQueue
+from collections import defaultdict, OrderedDict
+from itertools import chain
+from math import inf
 
 
 def generate(width, height):
     # Проверим ограничения параметров на 0
     if (width < 1) or (height < 1):
         return None
-
     top_limit = 2 ** 32 - 1
     # Проверим ограничения по максимальному допустимому размеру
     if ((top_limit - 1) // 2 <= width) or ((top_limit - 1) // 2 <= height):
         return None
 
-    # Инициализируем размер конечной матрицы maze
     # Ячейки будут представлять собой фрагменты 2x2 + 1 одно значение
     # сверху и слева для стен
     output_height = height * 2 + 1
     output_width = width * 2 + 1
     # Инициализируем лабиринт
-    maze = [['█' for j in range(output_width)] for i in range(output_height)]
+    maze = [['█' for _ in range(output_width)] for _ in range(output_height)]
     for i in range(1, output_height, 2):
         for j in range(1, output_width, 2):
             # Если этот элемент в строке является ячейкой в левом верхнем
@@ -36,41 +35,6 @@ def generate(width, height):
     return maze
 
 
-def best_first_search(maze):
-    # Задаем начальную и конечную точки лабиринта
-    start = (1, 1)
-    goal = (len(maze) - 2, len(maze[0]) - 2)
-
-    # Создаем очередь с приоритетами и добавляем в нее начальную точку
-    frontier = PriorityQueue()
-    frontier.put(start, False)
-
-    # Словарь для хранения путей
-    came_from = {start: None}
-
-    while not frontier.empty():
-        # Получаем следующую точку из очереди с приоритетами
-        current = frontier.get()
-
-        # Если мы достигли цели, то выходим из цикла
-        if current == goal:
-            break
-
-        # Получаем соседние точки
-        for next_point in get_neighbors(current, maze):
-            # Если мы еще не были в этой точке
-            if next_point not in came_from:
-                # Вычисляем приоритет для этой точки
-                priority = heuristic(goal, next_point)
-                # Добавляем эту точку в очередь с приоритетами
-                frontier.put(next_point, priority)
-                # Добавляем путь до этой точки в словарь came_from
-                came_from[next_point] = current
-
-    # Восстанавливаем путь до цели из словаря came_from
-    return reconstruct_path(came_from, start, goal)
-
-
 def get_neighbors(pos, maze):
     neighbors = []
     # Перебираем четыре направления: вверх, вниз, влево и вправо
@@ -84,23 +48,65 @@ def get_neighbors(pos, maze):
     return neighbors
 
 
-def heuristic(a, b):
-    # Вычисляем эвристическую функцию как манхеттенское расстояние
-    # между двумя точками
-    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+class IndexedQueue(OrderedDict):
+    "Queue-like container with fast search"
+
+    def push(self, item):
+        self[item] = None
+
+    def pop(self):
+        return OrderedDict.popitem(self, last=False)[0]
 
 
-def reconstruct_path(came_from, start, goal):
-    current = goal
-    path = []
-    # Идем от цели к началу по словарю came_from
-    while current != start:
-        # Добавляем текущую точку в путь
-        path.append(current)
-        # Переходим к предыдущей точке по пути
-        current = came_from[current]
-    # Добавляем начальную точку в путь
-    path.append(start)
-    # Переворачиваем путь, чтобы он шел от начала к цели
-    path.reverse()
-    return path
+def find_path(points, start, end=None):
+    gr = create_dict(points)
+    dist = defaultdict(lambda: inf)
+    dist[start] = 0
+    path = {start: (start, ())}
+    m0 = set()
+    m1, m1_urg = IndexedQueue.fromkeys([start]), IndexedQueue()
+    m2 = set(chain.from_iterable(
+        (v for v in from_u) for from_u in gr.values())) - {start}
+
+    def relax(u, v):
+        if dist[v] > dist[u] + 1:
+            dist[v] = dist[u] + 1
+            path[v] = (v, path[u])
+            return True
+        return False
+
+    while m1 or m1_urg:
+        u = m1_urg.pop() if m1_urg else m1.pop()
+        for v in gr.get(u, ()):
+            if v in m2:
+                m1.push(v)
+                m2.discard(v)
+                relax(u, v)
+            elif v in m1:
+                relax(u, v)
+            elif v in m0 and relax(u, v):
+                m1_urg.push(v)
+                m0.discard(v)
+        m0.add(u)
+
+    if end is None:
+        return path
+    elif end in path:
+        restore_path = lambda tup: \
+            (*restore_path(tup[1]), tup[0]) if tup else ()
+        return restore_path(path[end])
+    else:
+        return ()
+
+
+def create_dict(points):
+    points_dict = defaultdict(list)
+    for first, second in points:
+        points_dict[first].append(second)
+    return points_dict
+
+
+if __name__ == '__main__':
+    points = [('a', 'b'), ('b', 'c'), ('c', 'a'), ('c', 'd'), ('a', '5')]
+    path = find_path(points, 'a', 'c')
+    print(path)
