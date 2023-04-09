@@ -28,20 +28,17 @@ def check_args(args: Any) -> bool:
         print("Неверный файл.")
         return False
 
-    if args.load_maze_image and (not os.path.exists(
-            args.load_maze_image) or not args.load_maze_image.endswith(
-        ('.png', '.jpg'))):
+    if args.load_maze_image and (not os.path.exists(args.load_maze_image)
+                                 or not args.load_maze_image.endswith(
+                ('.png', '.jpg'))):
         print("Неверный файл.")
         return False
 
-    if args.save_maze_image and (args.save_maze_image[-3:] not in ["jpg",
-                                                                   "png"] or
-                                 "/" in args.save_maze_image):
+    if args.save_maze_image and args.save_maze_image[-3:] not in ["jpg", "png"]:
         print("Неверный формат файла.")
         return False
 
-    if args.save_maze_text and (args.save_maze_text[-3:] not in ["txt"] or
-                                "/" in args.save_maze_text):
+    if args.save_maze_text and args.save_maze_text[-3:] != "txt":
         print("Неверный файл.")
         return False
 
@@ -96,16 +93,18 @@ def parse_args() -> None:
         elif args.load_maze_image:
             maze = read_from_image(args.load_maze_image)
 
-        if args.solution:
-            try:
-                solution = find_path(maze)
-                visualization_init(maze, solution, args.save_maze_image,
-                                   args.save_maze_text)
-            except (IndexError, KeyError):
-                print("Ошибка выполнения. Завершение программы...")
-        else:
-            visualization_init(maze, img_path=args.save_maze_image,
-                               text_path=args.save_maze_text)
+        if maze:
+            if args.solution:
+                try:
+                    solution = find_path(maze)
+                    print(solution)
+                    visualization_init(maze, solution, args.save_maze_image,
+                                       args.save_maze_text)
+                except (IndexError, KeyError):
+                    print("Ошибка выполнения. Завершение программы...")
+            else:
+                visualization_init(maze, img_path=args.save_maze_image,
+                                   text_path=args.save_maze_text)
     else:
         print("Переданы неверные аргументы.")
 

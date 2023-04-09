@@ -1,3 +1,4 @@
+import pygame as pg
 from PIL import Image
 
 
@@ -24,18 +25,29 @@ def calculate_square_size(path_to_file: str):
 def read_from_image(path_to_file: str):
     with Image.open(path_to_file) as img:
         maze = []
-
         square_size = calculate_square_size(path_to_file)
-
+        if not square_size:
+            print("This image is incorrect")
+            return None
         for i in range(0, img.size[1], square_size):
             row = []
             for j in range(0, img.size[0], square_size):
                 square = img.crop((j, i, j + square_size, i + square_size))
-
                 if (0, 0, 0) in [color[1] for color in square.getcolors()]:
                     row.append('█')
                 else:
                     row.append('')
             maze.append(row)
-
     return maze
+
+
+def save_img(screen, img_path):
+    print(f"Изображение лабиринта сохранено в файл {img_path}")
+    pg.image.save(screen, img_path)
+
+
+def save_txt(maze, text_path):
+    with open(text_path, "w", encoding="utf-8") as file:
+        for row in maze:
+            file.write(''.join(row) + "\r\n")
+    print(f"Лабиринт в текстовом формате сохранён в файл {text_path}")

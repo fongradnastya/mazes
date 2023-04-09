@@ -1,9 +1,13 @@
 import pygame as pg
+from file_proc import *
 
 # Задаем цвета
 WALL = (134, 28, 176)
 BACKGROUND = (217, 135, 250)
 PATH = (252, 219, 3)
+
+WHITE = (225, 225, 225)
+BLACK = (0, 0, 0)
 
 
 def print_maze(maze):
@@ -25,10 +29,10 @@ def visualize_maze(screen, maze, scale):
     for i in range(len(maze)):
         for j in range(len(maze[0])):
             if maze[i][j] == '█':
-                pg.draw.rect(screen, WALL,
+                pg.draw.rect(screen, BLACK,
                              (j * scale, i * scale, scale, scale))
             else:
-                pg.draw.rect(screen, BACKGROUND, (j * scale, i * scale, scale,
+                pg.draw.rect(screen, WHITE, (j * scale, i * scale, scale,
                                                   scale))
     # Обновляем экран
     pg.display.flip()
@@ -66,8 +70,6 @@ def visualization_init(maze: [[]], solution: [()] = None,
                        img_path: str = None, text_path: str = None):
     # Инициализируем Pygame
     pg.init()
-    # pygame_icon = pg.image.load('bird.png')
-    # pg.display.set_icon(pygame_icon)
     pg.display.set_caption('Maze solution')
     width = len(maze[0])
     height = len(maze)
@@ -78,18 +80,10 @@ def visualization_init(maze: [[]], solution: [()] = None,
     if solution:
         print_solution(solution)
         draw_solution(screen, solution, scale)
-
     if img_path:
-        print(f"Изображение лабиринта сохранено в файл {img_path} в папке "
-              f"maze_image")
-        pg.image.save(screen, "maze_image/" + img_path)
-
+        save_img(screen, img_path)
     if text_path:
-        with open("maze_text/" + text_path, "w", encoding="utf-8") as file:
-            for row in maze:
-                file.write(''.join(row) + "\r\n")
-        print(f"Лабиринт в текстовом формате сохранён в файл {text_path}"
-              f" в папке maze_text")
+        save_txt(maze, text_path)
     # Ожидаем закрытия окна
     running = True
     while running:
