@@ -5,9 +5,6 @@ WALL = (134, 28, 176)
 BACKGROUND = (217, 135, 250)
 PATH = (252, 219, 3)
 
-# WHITE = (225, 225, 225)
-# BLACK = (0, 0, 0)
-
 
 def print_maze(maze):
     # Проверяем указатель на None

@@ -5,16 +5,19 @@ from math import inf
 
 
 def generate(width, height):
-    # Проверим ограничения параметров на 0
+    """
+    Генерирует лабиринт при помощи метода двоичного дерева
+    @:param width: ширина генерируемого лабиринта
+    @:param height: высота генерируемого лабиринта
+    @:return: созданный лабиринт
+    """
     if (width < 1) or (height < 1):
         return None
     top_limit = 2 ** 32 - 1
     # Проверим ограничения по максимальному допустимому размеру
     if ((top_limit - 1) // 2 <= width) or ((top_limit - 1) // 2 <= height):
         return None
-
     # Ячейки будут представлять собой фрагменты 2x2 + 1 одно значение
-    # сверху и слева для стен
     output_height = height * 2 + 1
     output_width = width * 2 + 1
     # Инициализируем лабиринт
@@ -36,6 +39,12 @@ def generate(width, height):
 
 
 def get_neighbors(pos, maze):
+    """
+    Получает список всех ячеек, в которые можно перейти из данной
+    @:param pos: позиция текущей ячейки
+    @:param maze: лабиринт для поиска
+    @:return: список соседних ячеек
+    """
     neighbors = []
     # Перебираем четыре направления: вверх, вниз, влево и вправо
     for direction in [(0, 1), (1, 0)]:
@@ -49,7 +58,9 @@ def get_neighbors(pos, maze):
 
 
 class IndexedQueue(OrderedDict):
-    "Queue-like container with fast search"
+    """
+
+    """
 
     def push(self, item):
         self[item] = None
@@ -70,26 +81,26 @@ def find_path(maze):
     m2 = set(chain.from_iterable(
         (v for v in from_u) for from_u in gr.values())) - {start}
 
-    def relax(u, v):
-        if dist[v] > dist[u] + 1:
-            dist[v] = dist[u] + 1
-            path[v] = (v, path[u])
+    def relax(first_el, second_el):
+        if dist[second_el] > dist[first_el] + 1:
+            dist[second_el] = dist[first_el] + 1
+            path[second_el] = (second_el, path[first_el])
             return True
         return False
 
     while m1 or m1_urg:
-        u = m1_urg.pop() if m1_urg else m1.pop()
-        for v in gr.get(u, ()):
-            if v in m2:
-                m1.push(v)
-                m2.discard(v)
-                relax(u, v)
-            elif v in m1:
-                relax(u, v)
-            elif v in m0 and relax(u, v):
-                m1_urg.push(v)
-                m0.discard(v)
-        m0.add(u)
+        first_el = m1_urg.pop() if m1_urg else m1.pop()
+        for second_el in gr.get(first_el, ()):
+            if second_el in m2:
+                m1.push(second_el)
+                m2.discard(second_el)
+                relax(first_el, second_el)
+            elif second_el in m1:
+                relax(first_el, second_el)
+            elif second_el in m0 and relax(first_el, second_el):
+                m1_urg.push(second_el)
+                m0.discard(second_el)
+        m0.add(first_el)
 
     if end is None:
         return path

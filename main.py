@@ -16,30 +16,35 @@ def check_args(args: Any) -> bool:
 
     if args.width_height:
         if args.width_height[0] not in range(3, 201):
-            print("Ширина лабиринта должна быть от 3 до 200.")
+            print("Maze width should be between 3 and 200")
             return False
-
         if args.width_height[1] not in range(3, 201):
-            print("Высота лабиринта должна быть от 3 до 200.")
+            print("Maze height should be between 3 and 200")
             return False
 
-    if args.load_maze_text and (not os.path.exists(
-            args.load_maze_text) or not args.load_maze_text.endswith('.txt')):
-        print("Неверный файл.")
+    if args.load_maze_text:
+        if not os.path.exists(args.load_maze_text):
+            print("This path is not exist")
+            return False
+        if not args.load_maze_text.endswith('.txt'):
+            print("Wrong file type")
+            return False
+
+    if args.load_maze_image:
+        if not os.path.exists(args.load_maze_image):
+            print("This path is not exist")
+            return False
+        if not args.load_maze_image.endswith(('.png', '.jpg')):
+            print("Wrong file type")
+            return False
+
+    if args.save_maze_image and \
+            not args.save_maze_image.endswith(('.png', '.jpg')):
+        print("Wrong file type")
         return False
 
-    if args.load_maze_image and (not os.path.exists(args.load_maze_image)
-                                 or not args.load_maze_image.endswith(
-                ('.png', '.jpg'))):
-        print("Неверный файл.")
-        return False
-
-    if args.save_maze_image and args.save_maze_image[-3:] not in ["jpg", "png"]:
-        print("Неверный формат файла.")
-        return False
-
-    if args.save_maze_text and args.save_maze_text[-3:] != "txt":
-        print("Неверный файл.")
+    if args.save_maze_text and not args.save_maze_text.endswith(".txt"):
+        print("Wrong file type")
         return False
 
     return True
@@ -48,8 +53,8 @@ def check_args(args: Any) -> bool:
 def parse_args() -> None:
     """Обработка параметров командной строки"""
     # Осуществляем разбор аргументов командной строки
-    parser = argparse.ArgumentParser(description="Генерация и решение "
-                                                 "лабиринтов")
+    parser = argparse.ArgumentParser(
+        description="Generation and solution of mazes")
 
     # Метод add_mutually_exclusive_group() создает взаимоисключающую группу
     # параметров командной строки
@@ -101,18 +106,13 @@ def parse_args() -> None:
                     start_visualization(maze, solution, args.save_maze_image,
                                         args.save_maze_text)
                 except (IndexError, KeyError):
-                    print("Ошибка выполнения. Завершение программы...")
+                    print("Runtime error")
             else:
                 start_visualization(maze, img_path=args.save_maze_image,
                                     text_path=args.save_maze_text)
     else:
-        print("Переданы неверные аргументы.")
-
-
-def main():
-    """Точка входа"""
-    parse_args()
+        print("Invalid arguments passed")
 
 
 if __name__ == "__main__":
-    main()
+    parse_args()

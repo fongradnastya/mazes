@@ -6,6 +6,11 @@ BACKGROUND = (217, 135, 250)
 
 
 def read_from_text(path_to_file: str):
+    """
+    Считывает содержимое из файла и сохраняет его в двумерный массив
+    @:param path_to_file: путь до текстового файла
+    @:return: массив считанных значений
+    """
     maze = []
     with open(path_to_file, "r", encoding="utf-8") as file:
         for line in file:
@@ -15,6 +20,11 @@ def read_from_text(path_to_file: str):
 
 
 def calculate_square_size(path_to_file: str):
+    """
+    Вычисляет размер ячейки изображённого лабиринта
+    @:param path_to_file: путь до файла с изображением
+    @:return: размер ячейки в пикселах
+    """
     with Image.open(path_to_file) as img:
         width, height = img.size
         print(img.getpixel((0, 0)))
@@ -29,6 +39,11 @@ def calculate_square_size(path_to_file: str):
 
 
 def read_from_image(path_to_file: str):
+    """
+    Строит лабиринт на основе его изображения
+    @:param path_to_file: путь до файла с изображением
+    @:return: построенный лабиринт
+    """
     with Image.open(path_to_file) as img:
         maze = []
         square_size = calculate_square_size(path_to_file)
@@ -50,11 +65,21 @@ def read_from_image(path_to_file: str):
 
 
 def save_img(screen, img_path):
-    print(f"Изображение лабиринта сохранено в файл {img_path}")
+    """
+    Сохраняет лабиринт в виде изображения
+    @:param screen: поверхность для сохранения
+    @:param img_path: путь до файла для сохранения
+    """
     pg.image.save(screen, img_path)
+    print(f"Maze image was successfully saved in the {img_path}")
 
 
 def save_txt(maze, text_path):
+    """
+    Сохраняет лабиринт в виде изображения
+    @:param maze: поверхность для сохранения
+    @:param text_path: путь до файла для сохранения
+        """
     with open(text_path, "w", encoding="utf-8") as file:
         for row in maze:
             file.write(''.join(row) + "\r\n")
