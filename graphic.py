@@ -1,4 +1,3 @@
-import pygame as pg
 from file_proc import *
 
 # Задаем цвета
@@ -6,8 +5,8 @@ WALL = (134, 28, 176)
 BACKGROUND = (217, 135, 250)
 PATH = (252, 219, 3)
 
-WHITE = (225, 225, 225)
-BLACK = (0, 0, 0)
+# WHITE = (225, 225, 225)
+# BLACK = (0, 0, 0)
 
 
 def print_maze(maze):
@@ -29,11 +28,11 @@ def visualize_maze(screen, maze, scale):
     for i in range(len(maze)):
         for j in range(len(maze[0])):
             if maze[i][j] == '█':
-                pg.draw.rect(screen, BLACK,
+                pg.draw.rect(screen, WALL,
                              (j * scale, i * scale, scale, scale))
             else:
-                pg.draw.rect(screen, WHITE, (j * scale, i * scale, scale,
-                                                  scale))
+                pg.draw.rect(screen, BACKGROUND,
+                             (j * scale, i * scale, scale, scale))
     # Обновляем экран
     pg.display.flip()
 
@@ -66,14 +65,14 @@ def print_solution(solution):
     print(solution_str)
 
 
-def visualization_init(maze: [[]], solution: [()] = None,
-                       img_path: str = None, text_path: str = None):
+def start_visualization(maze: [[]], solution: [()] = None,
+                        img_path: str = None, text_path: str = None):
     # Инициализируем Pygame
     pg.init()
     pg.display.set_caption('Maze solution')
     width = len(maze[0])
     height = len(maze)
-    scale = 900 // height if height >= width else 900 // width
+    scale = 800 // height if height >= width else 900 // width
     # Создаем окно
     screen = pg.display.set_mode((width * scale, height * scale))
     visualize_maze(screen, maze, scale)

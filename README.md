@@ -25,3 +25,11 @@ python main.py -lmt maze_text/array.txt -sol
 ```cmd
 python main.py -lmi maze_image/n_maze.png  
 ```
+Сохранение лабиринта в виде изображения
+```cmd
+python main.py -wh 10 10 -smi maze_image/n_maze.png  
+```
+Сохранение лабиринта в текстовом виде
+```cmd
+python main.py -wh 10 10 -smt maze_text/n_maze.txt -sol 
+```

@@ -6,7 +6,7 @@ import argparse
 from typing import Any
 
 from maze import generate, find_path
-from graphic import visualization_init
+from graphic import start_visualization
 from file_proc import read_from_text, \
     read_from_image
 
@@ -98,13 +98,13 @@ def parse_args() -> None:
                 try:
                     solution = find_path(maze)
                     print(solution)
-                    visualization_init(maze, solution, args.save_maze_image,
-                                       args.save_maze_text)
+                    start_visualization(maze, solution, args.save_maze_image,
+                                        args.save_maze_text)
                 except (IndexError, KeyError):
                     print("Ошибка выполнения. Завершение программы...")
             else:
-                visualization_init(maze, img_path=args.save_maze_image,
-                                   text_path=args.save_maze_text)
+                start_visualization(maze, img_path=args.save_maze_image,
+                                    text_path=args.save_maze_text)
     else:
         print("Переданы неверные аргументы.")
 
