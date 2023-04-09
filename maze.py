@@ -59,17 +59,28 @@ def get_neighbors(pos, maze):
 
 class IndexedQueue(OrderedDict):
     """
-
+    Класс очереди, построенной на основе списков
     """
 
     def push(self, item):
+        """
+        Добавление элемента в конец очереди
+        """
         self[item] = None
 
     def pop(self):
+        """
+        Удаление элемента из очереди
+        """
         return OrderedDict.popitem(self, last=False)[0]
 
 
 def find_path(maze):
+    """
+    Вычисляет кратчайший путь при помощи алгоритма Левита
+    @:param maze: лабиринт для поиска пути
+    @:return: последовательность вершин из кратчайшего пути
+    """
     start = (1, 1)
     end = (len(maze) - 2, len(maze[0]) - 2)
     gr = create_dict(maze, len(maze[0]), len(maze))
@@ -113,6 +124,13 @@ def find_path(maze):
 
 
 def create_dict(maze, width, height):
+    """
+    Создаёт словарь смежных друг с другом вершин
+    @:param maze: лабиринт в виде двухмерного списка
+    @:param width: ширина лабиринта
+    @:param height: высота лабиринта
+    @:return: словарь смежных ячеек лабиринта
+    """
     points_dict = defaultdict(list)
     for i in range(1, height - 1):
         for j in range(1, width - 1):

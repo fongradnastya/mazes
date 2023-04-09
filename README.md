@@ -12,7 +12,7 @@
   <img src="maze_image/maze.png" alt="maze" width="700"/>
 </p>
 <p align="center">
-  <img src="maze_image/purple.png" alt="maze" width="700"/>
+  <img src="maze_image/purple.png" alt="maze" width="500"/>
 </p>
 
 ## Запуск программы
@@ -24,11 +24,11 @@ python main.py -wh 20 10 -sol
 ```
 Считывание лабиринта из текстового файла:
 ```cmd
-python main.py -lmt maze_text/array.txt -sol
+python main.py -lmt maze_text/n_maze.txt -sol
 ```
 Считывание лабиринта из изображения:
 ```cmd
-python main.py -lmi maze_image/n_maze.png  
+python main.py -lmi maze_image/n_maze.png -sol
 ```
 Сохранение лабиринта в виде изображения
 ```cmd

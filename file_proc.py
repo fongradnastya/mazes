@@ -71,7 +71,7 @@ def save_img(screen, img_path):
     @:param img_path: путь до файла для сохранения
     """
     pg.image.save(screen, img_path)
-    print(f"Maze image was successfully saved in the {img_path}")
+    print(f"A maze image was successfully saved in the {img_path}")
 
 
 def save_txt(maze, text_path):
@@ -83,4 +83,5 @@ def save_txt(maze, text_path):
     with open(text_path, "w", encoding="utf-8") as file:
         for row in maze:
             file.write(''.join(row) + "\r\n")
-    print(f"Лабиринт в текстовом формате сохранён в файл {text_path}")
+    print(f"A maze was successfully converted to the text and saved in "
+          f"the {text_path}")

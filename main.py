@@ -12,7 +12,10 @@ from file_proc import read_from_text, \
 
 
 def check_args(args: Any) -> bool:
-    """Проверка переданных аргументов"""
+    """
+    Проверка переданных программе аргументов
+    @:param args: список аргументов командной строки
+    """
 
     if args.width_height:
         if args.width_height[0] not in range(3, 201):
@@ -51,7 +54,9 @@ def check_args(args: Any) -> bool:
 
 
 def parse_args() -> None:
-    """Обработка параметров командной строки"""
+    """
+    Обработка параметров командной строки
+    """
     # Осуществляем разбор аргументов командной строки
     parser = argparse.ArgumentParser(
         description="Generation and solution of mazes")
