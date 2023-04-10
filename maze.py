@@ -86,9 +86,11 @@ def find_path(maze):
     gr = create_dict(maze, len(maze[0]), len(maze))
     dist = defaultdict(lambda: inf)
     dist[start] = 0
-    path = {start: (start, ())}
-    m0 = set()
+    path = {start: (start, ())}  # путь от начальной до конечной вершины
+    m0 = set()  # вершины, расстояние до которых уже вычислено
+    # вершины, расстояние до которых вычисляется
     m1, m1_urg = IndexedQueue.fromkeys([start]), IndexedQueue()
+    # вершины, расстояние до которых ещё не вычислено
     m2 = set(chain.from_iterable(
         (v for v in from_u) for from_u in gr.values())) - {start}
 
@@ -99,16 +101,22 @@ def find_path(maze):
             return True
         return False
 
+    # На каждом шаге алгоритма мы берём вершину из множества M1
+    # Переводим эту вершину во множество M0.
     while m1 or m1_urg:
         first_el = m1_urg.pop() if m1_urg else m1.pop()
+        # Просматриваем все рёбра, выходящие из этой вершины.
         for second_el in gr.get(first_el, ()):
             if second_el in m2:
+                # Переносим из m2 в m1
                 m1.push(second_el)
                 m2.discard(second_el)
                 relax(first_el, second_el)
             elif second_el in m1:
+                # Пытаемся улучшить путь до вершины
                 relax(first_el, second_el)
             elif second_el in m0 and relax(first_el, second_el):
+                # Перемещаем вершину из m0 в m1
                 m1_urg.push(second_el)
                 m0.discard(second_el)
         m0.add(first_el)

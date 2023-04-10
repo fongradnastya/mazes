@@ -66,26 +66,26 @@ def parse_args() -> None:
     group = parser.add_mutually_exclusive_group(required=True)
 
     group.add_argument('-wh', '--width_height', nargs=2, dest="width_height",
-                       type=int, help='Ширина и высота лабиринта (от 3 до 200)')
+                       type=int, help='Maze width and height (from 3 to 200)')
 
     group.add_argument('-lmi', '--load-maze-image', dest="load_maze_image",
                        type=str,
-                       help='Загрузка лабиринта из изображения')
+                       help='Loading maze from image')
 
     group.add_argument('-lmt', '--load-maze-text', dest="load_maze_text",
                        type=str,
-                       help='Загрузка лабиринта из текста')
+                       help='Loading maze from text')
 
     parser.add_argument("-sol", "--solution", dest="solution",
-                        action="store_true", help="Решение лабиринта")
+                        action="store_true", help="Maze solution")
 
     parser.add_argument("-smi", "--save-maze-image", dest="save_maze_image",
-                        type=str, help="Выходной файл для сохранения лабиринта"
-                                       "в виде изображения (jpg/png)")
+                        type=str, help="Output file for saving the maze"
+                                       " as an image (jpg/png)")
 
     parser.add_argument("-smt", "--save-maze-text", dest="save_maze_text",
-                        type=str, help="Выходной файл для сохранения лабиринта"
-                                       "в виде текста (txt)")
+                        type=str, help="Output file to save"
+                                       " maze as a text (txt)")
 
     # В эту переменную попадает результат разбора аргументов командной строки.
     args = parser.parse_args()
@@ -107,7 +107,6 @@ def parse_args() -> None:
             if args.solution:
                 try:
                     solution = find_path(maze)
-                    print(solution)
                     start_visualization(maze, solution, args.save_maze_image,
                                         args.save_maze_text)
                 except (IndexError, KeyError):
